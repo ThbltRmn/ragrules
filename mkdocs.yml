@@ -10,6 +10,7 @@ repo_name: ThbltRmn/ragrules
 nav:
   - Home: index.md
   - Modules: modules.md
+  - HomeBis: index.md
 plugins:
   - search
   - mkdocstrings:

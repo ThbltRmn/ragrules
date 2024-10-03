@@ -18,4 +18,7 @@ RUN poetry install --no-interaction --no-ansi --no-root --no-dev
 # Copy Python code to the Docker image
 COPY ragrules /code/ragrules/
 
-CMD [ "python", "ragrules/foo.py"]
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
+
+CMD [ "python", "ragrules/app.py"]

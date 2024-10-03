@@ -1,15 +1,16 @@
 site_name: ragrules
 repo_url: https://github.com/ThbltRmn/ragrules
 site_url: https://ThbltRmn.github.io/ragrules
-site_description: Project arount RAG applied to game rules, using cookiecutter-poetry.
+site_description: Project around RAG applied to game rules (template by cookiecutter-poetry).
 site_author: Thibault Romann
 edit_uri: edit/main/docs/
 repo_name: ThbltRmn/ragrules
-copyright: Maintained by <a href="https://ThbltRmn.com">Florian</a>.
+#copyright: Maintained by <a href="https://ThbltRmn.com">Thibault</a>.
 
 nav:
   - Home: index.md
   - Modules: modules.md
+  - HomeBis: index.md
 plugins:
   - search
   - mkdocstrings:
@@ -40,12 +41,12 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/ThbltRmn/ragrules
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/ragrules
+#extra:
+#  social:
+#    - icon: fontawesome/brands/github
+#      link: https://github.com/ThbltRmn/ragrules
+#    - icon: fontawesome/brands/python
+#      link: https://pypi.org/project/ragrules
 
 markdown_extensions:
   - toc:

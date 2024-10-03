@@ -6,3 +6,4 @@
 [![License](https://img.shields.io/github/license/ThbltRmn/ragrules)](https://img.shields.io/github/license/ThbltRmn/ragrules)
 
 Project arount RAG applied to game rules, using cookiecutter-poetry.
+Test modification here.

@@ -18,30 +18,21 @@ def extract_text_from_pdf(bucket_name, file_name):
     Returns:
         str: Le texte extrait du fichier PDF.
     """
-    print("extract_text_from_pdf : step0")
 
     storage_client = storage.Client()
     blob = storage_client.bucket(bucket_name).blob(file_name)
-    print("extract_text_from_pdf : step1")
 
     file_stream = BytesIO()
     blob.download_to_file(file_stream)
     file_stream.seek(0)  # Reset the stream position to the beginning
-    print("extract_text_from_pdf : step2")
 
     reader = PdfReader(file_stream)
-    print("extract_text_from_pdf : step3")
     import time
-    print("sleeping..")
-    time.sleep(4)
-    print("wakeup")
+
     text = ""
     for page in reader.pages:    
-        print(f"here is a page before update : <{page}>")
         text += page.extract_text() + "\n"
-        print(f"here is a page after apdate : <{page}>")
 
-    print("extract_text_from_pdf : step4")
 
     return text
 
@@ -58,7 +49,6 @@ def save_text_to_bucket(bucket_name, file_path, text):
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(file_path)
-    print("save_text_to_bucket : step1")
 
     # Create a dictionary with the required keys
     data = {

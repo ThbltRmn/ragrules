@@ -13,6 +13,11 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 flask = "^3.0.3"
+pypdf = "^5.0.1"
+google-api-python-client = "^2.147.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.1"
+google-cloud-storage = "^2.18.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

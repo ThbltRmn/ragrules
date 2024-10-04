@@ -54,6 +54,9 @@ def save_text_to_bucket(bucket_name, file_path, text):
     # Upload the JSON string to the bucket
     blob.upload_from_string(json_data, content_type='application/json')
 
+
+
+
 save_text_to_bucket("prod-ragrules", "preprocessed/e1-crack-list-regle.json", test)
 
 

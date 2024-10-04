@@ -92,10 +92,10 @@ def preprocess(cloud_event: CloudEvent) -> tuple:
         print(f"Created: {timeCreated}")
         print(f"Updated: {updated}")
 
-        filename = name.split("/")[-1]
+        filename = name.split("/")[-1].split(".")[0]
 
         extracted_rules = extract_text_from_pdf(bucket, name)
-        save_text_to_bucket(bucket, f"preprocessed/{filename}", extracted_rules)
+        save_text_to_bucket(bucket, f"preprocessed/{filename}.json", extracted_rules)
 
 
         return event_id, event_type, bucket, name, metageneration, timeCreated, updated

@@ -1,3 +1,4 @@
+**Deploy a Cloud Function**
 
 
 1. First step : Grant access to SA to pubsub (do it only the first time, in this project, already done.)
@@ -21,10 +22,10 @@ gcloud functions deploy preprocess-pdf \
 --gen2 \
 --runtime=python312 \
 --region=europe-west1 \
---source=. \
+--source=./cloudfunctions \
 --entry-point=preprocess \
 --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
---trigger-event-filters="bucket=prod-ragrules "
+--trigger-event-filters="bucket=prod-ragrules"
 ````
 
 3. Check logs

@@ -1916,4 +1916,8 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
+<<<<<<< HEAD
 content-hash = "f639e7bdfb35f679f52acf5d57d7c709da362f03feabf4e30703f3badfaebd84"
+=======
+content-hash = "5c493453215e2367f9fce18e32eda6ff70f64e3be3c8ff3020c370e57fa92ff8"
+>>>>>>> b797f7f (cloud functions working ; to be reworked)

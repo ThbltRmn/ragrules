@@ -1,4 +1,5 @@
-from ragrules.offline.chunker.chunker import Chunker  # Assuming the Chunker class is saved in a file called chunker.py
+from cloudfunctions.chunker.chunker import Chunker
+
 
 def test_chunk_size_exact_division():
     text = "abcdefghij"  # Length is 10

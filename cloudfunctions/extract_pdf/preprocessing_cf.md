@@ -1,6 +1,5 @@
 **Deploy a Cloud Function**
 
-
 1. First step : Grant access to SA to pubsub (do it only the first time, in this project, already done.)
 
 ```
@@ -17,7 +16,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 2. Submit your cloud function
 
-````
+```
 gcloud functions deploy preprocess-pdf \
 --gen2 \
 --runtime=python312 \
@@ -26,10 +25,10 @@ gcloud functions deploy preprocess-pdf \
 --entry-point=preprocess \
 --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
 --trigger-event-filters="bucket=prod-ragrules"
-````
+```
 
 3. Check logs
 
-````
+```
 gcloud functions logs read preprocess-pdf --region europe-west1 --gen2 --limit=20
-````
+```

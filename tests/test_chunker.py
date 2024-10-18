@@ -8,12 +8,14 @@ def test_chunk_size_exact_division():
     expected_chunks = ["ab", "cd", "ef", "gh", "ij"]
     assert chunker.get_chunks(text) == expected_chunks
 
+
 def test_chunk_size_larger_than_text():
     text = "abc"
     chunk_size = 10
     chunker = Chunker(chunk_size)
     expected_chunks = ["abc"]
     assert chunker.get_chunks(text) == expected_chunks
+
 
 def test_chunk_size_not_exact_division():
     text = "abcdefghijk"  # Length is 11
@@ -22,6 +24,7 @@ def test_chunk_size_not_exact_division():
     expected_chunks = ["abc", "def", "ghi", "jk"]
     assert chunker.get_chunks(text) == expected_chunks
 
+
 def test_empty_text():
     text = ""
     chunk_size = 5
@@ -29,12 +32,14 @@ def test_empty_text():
     expected_chunks = []
     assert chunker.get_chunks(text) == expected_chunks
 
+
 def test_chunk_size_one():
     text = "abcd"
     chunk_size = 1
     chunker = Chunker(chunk_size)
     expected_chunks = ["a", "b", "c", "d"]
     assert chunker.get_chunks(text) == expected_chunks
+
 
 def test_repr_method():
     chunk_size = 3

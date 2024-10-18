@@ -7,10 +7,7 @@ def full_test():
     content = "What is the meaning of life?"
 
     # Embed content
-    result = embedder.embed_content(
-        content="What is the meaning of life?",
-        title="Embedding of single string"
-    )
+    result = embedder.embed_content(content="What is the meaning of life?", title="Embedding of single string")
 
     # Print the first 50 characters of the embedding
     if result:
@@ -19,4 +16,6 @@ def full_test():
         print("No embedding returned.")
 
     if result:
-        embedder.save_embedding(content, result, "ragrules/tests/datas/embeded.txt", "ragrules/tests/datas/sentences.txt")
+        embedder.save_embedding(
+            content, result, "ragrules/tests/datas/embeded.txt", "ragrules/tests/datas/sentences.txt"
+        )

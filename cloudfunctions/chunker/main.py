@@ -8,7 +8,6 @@ from embedder import Embedder
 # Triggered by a change in a storage bucket
 @functions_framework.cloud_event
 def main_chunker(cloud_event: CloudEvent):
-
     data = cloud_event.data
 
     event_id = cloud_event["id"]
@@ -34,7 +33,7 @@ def main_chunker(cloud_event: CloudEvent):
         print(f"Created: {timeCreated}")
         print(f"Updated: {updated}")
 
-        data = gs_functions.open_file(bucket_name=bucket,file_name=name)
+        data = gs_functions.open_file(bucket_name=bucket, file_name=name)
 
         chunks = chunker.Chunker(chunk_size=200).get_chunks(data["content"])
 
@@ -50,9 +49,7 @@ def main_chunker(cloud_event: CloudEvent):
         # Embed content ; TODO replace by a batch embedding
         for chunk in chunks:
             print(chunk)
-            result = embedder.embed_content(
-                chunk
-            )
+            result = embedder.embed_content(chunk)
 
             # Print the first 50 characters of the embedding
             if result:
@@ -65,10 +62,9 @@ def main_chunker(cloud_event: CloudEvent):
                 print("One embeded")
     print("All embeddings saved")
 
-    gs_functions.upload_file("prod-ragrules","./embeded.txt","embeddings/embeded.txt")
-    gs_functions.upload_file("prod-ragrules","./sentences.txt","embeddings/sentences.txt")
+    gs_functions.upload_file("prod-ragrules", "./embeded.txt", "embeddings/embeded.txt")
+    gs_functions.upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
     print("FINISHED")
 
-    #gcloud functions deploy chunker --gen2 --runtime=python312 --region=europe-west1 --source=. --entry-point=main_chunker --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=prod-ragrules"
+    # gcloud functions deploy chunker --gen2 --runtime=python312 --region=europe-west1 --source=. --entry-point=main_chunker --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=prod-ragrules"
     # and add --set-env-vars GEMINI_API_KEY=...
-

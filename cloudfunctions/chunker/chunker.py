@@ -18,7 +18,7 @@ class Chunker:
         Returns:
             list: A list of text chunks.
         """
-        return [text[i:i + self.chunk_size] for i in range(0, len(text), self.chunk_size)]
+        return [text[i : i + self.chunk_size] for i in range(0, len(text), self.chunk_size)]
 
     def __repr__(self):
         """

@@ -53,7 +53,7 @@ class Embedder:
 
     # Save to two files : one listing the embeddings and one listing the sentences
     def save_embedding(self, embedding, sentence, local_embed_path, local_sentences_path):
-        with open(local_embed_path, 'w') as embed_file, open(local_sentences_path, 'w') as sentence_file:
+        with open(local_embed_path, 'a') as embed_file, open(local_sentences_path, 'a') as sentence_file:
             #for sentence, embedding in zip(sentences, embeddings):
             created_id = str(uuid.uuid4())
 

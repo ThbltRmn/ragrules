@@ -36,23 +36,22 @@ def main_chunker(cloud_event: CloudEvent):
 
         data = gs_functions.open_file(bucket_name=bucket,file_name=name)
 
-        chunked = chunker.Chunker(chunk_size=100).get_chunks(data["content"])
+        chunks = chunker.Chunker(chunk_size=200).get_chunks(data["content"])
 
         print("RES")
         print(data["name"])
-        print(chunked)
+        print(chunks)
     else:
         print("Else")
 
-    if chunked:
+    if chunks:
         embedder = Embedder()
 
-        contents = data["content"]
-
         # Embed content ; TODO replace by a batch embedding
-        for content in contents:
+        for chunk in chunks:
+            print(chunk)
             result = embedder.embed_content(
-                content
+                chunk
             )
 
             # Print the first 50 characters of the embedding
@@ -62,13 +61,14 @@ def main_chunker(cloud_event: CloudEvent):
                 print("No embedding returned.")
 
             if result:
-                embedder.save_embedding(content, result, "./embeded.txt", "./sentences.txt")
+                embedder.save_embedding(result, chunk, "./embeded.txt", "./sentences.txt")
+                print("One embeded")
     print("All embeddings saved")
 
     gs_functions.upload_file("prod-ragrules","./embeded.txt","embeddings/embeded.txt")
     gs_functions.upload_file("prod-ragrules","./sentences.txt","embeddings/sentences.txt")
-
+    print("FINISHED")
 
     #gcloud functions deploy chunker --gen2 --runtime=python312 --region=europe-west1 --source=. --entry-point=main_chunker --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=prod-ragrules"
-
+    # and add --set-env-vars GEMINI_API_KEY=...
 

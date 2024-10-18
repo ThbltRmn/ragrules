@@ -6,6 +6,7 @@ import google.generativeai as genai
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
+
 class Embedder:
     def __init__(self, model="models/text-embedding-004", task_type="retrieval_document"):
         """
@@ -33,13 +34,13 @@ class Embedder:
             model=self.model,
             content=content,
             task_type=self.task_type,
-            title=title if title else "Embedding of content"
+            title=title if title else "Embedding of content",
         )
 
         self.result = result
 
         # Return the embedding part of the result
-        return result.get('embedding', None)
+        return result.get("embedding", None)
 
     def print_trimmed_embedding(self, embedding, length=50):
         """
@@ -49,21 +50,21 @@ class Embedder:
             embedding (list): The embedding vector.
             length (int): Number of characters to print before trimming.
         """
-        print(str(embedding)[:length] + '... TRIMMED]')
+        print(str(embedding)[:length] + "... TRIMMED]")
 
     # Save to two files : one listing the embeddings and one listing the sentences
     def save_embedding(self, embedding, sentence, local_embed_path, local_sentences_path):
-        with open(local_embed_path, 'a') as embed_file, open(local_sentences_path, 'a') as sentence_file:
-            #for sentence, embedding in zip(sentences, embeddings):
+        with open(local_embed_path, "a") as embed_file, open(local_sentences_path, "a") as sentence_file:
+            # for sentence, embedding in zip(sentences, embeddings):
             created_id = str(uuid.uuid4())
 
             embed_item = {"id": created_id, "embedding": embedding}
             sentence_item = {"id": created_id, "sentence": sentence}
 
             json.dump(sentence_item, sentence_file)
-            sentence_file.write('\n')
+            sentence_file.write("\n")
             json.dump(embed_item, embed_file)
-            embed_file.write('\n')
+            embed_file.write("\n")
 
     # def embed_batch_contents(self, content, title=None):
     #     """
@@ -112,16 +113,14 @@ class Embedder:
     #         json.dump(embed_item, embed_file)
     #         embed_file.write('\n')
 
+
 if __name__ == "__main__":
     embedder = Embedder()
 
     content = "What is the meaning of life?"
 
     # Embed content
-    result = embedder.embed_content(
-        content="What is the meaning of life?",
-        title="Embedding of single string"
-    )
+    result = embedder.embed_content(content="What is the meaning of life?", title="Embedding of single string")
 
     # Print the first 50 characters of the embedding
     if result:

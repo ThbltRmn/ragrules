@@ -1,9 +1,11 @@
+import json
 from io import BytesIO
+
 from google.cloud import storage
 from pypdf import PdfReader
-import json
 
-def extract_text_from_pdf(bucket_name, file_name):
+
+def extract_text_from_pdf(bucket_name: str, file_name: str) -> str:
     """
     Extrait le texte d'un fichier PDF dans un bucket Google Storage.
 
@@ -24,12 +26,14 @@ def extract_text_from_pdf(bucket_name, file_name):
     text = ""
     for page in reader.pages:
         text += page.extract_text() + "\n"
-    
+
     return text
+
 
 test = extract_text_from_pdf("prod-ragrules", "raw/e1-crack-list-regle.pdf")
 
-def save_text_to_bucket(bucket_name, file_path, text):
+
+def save_text_to_bucket(bucket_name: str, file_path: str, text: str) -> None:
     """
     Sauvegarde le texte dans un fichier JSON dans un bucket Google Storage.
 
@@ -41,26 +45,15 @@ def save_text_to_bucket(bucket_name, file_path, text):
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(file_path)
-    
+
     # Create a dictionary with the required keys
-    data = {
-        "name": file_path,
-        "content": text
-    }
-    
+    data = {"name": file_path, "content": text}
+
     # Convert the dictionary to a JSON string
     json_data = json.dumps(data)
-    
+
     # Upload the JSON string to the bucket
-    blob.upload_from_string(json_data, content_type='application/json')
-
-
+    blob.upload_from_string(json_data, content_type="application/json")
 
 
 save_text_to_bucket("prod-ragrules", "preprocessed/e1-crack-list-regle.json", test)
-
-
-
-
-
-

@@ -1,8 +1,8 @@
-from io import BytesIO
 import json
+from io import BytesIO
 
-from cloudevents.http import CloudEvent
 import functions_framework
+from cloudevents.http import CloudEvent
 from google.cloud import storage
 from pypdf import PdfReader
 
@@ -27,12 +27,10 @@ def extract_text_from_pdf(bucket_name: str, file_name: str) -> str:
     file_stream.seek(0)  # Reset the stream position to the beginning
 
     reader = PdfReader(file_stream)
-    import time
 
     text = ""
-    for page in reader.pages:    
+    for page in reader.pages:
         text += page.extract_text() + "\n"
-
 
     return text
 
@@ -51,16 +49,14 @@ def save_text_to_bucket(bucket_name: str, file_path: str, text: str) -> None:
     blob = bucket.blob(file_path)
 
     # Create a dictionary with the required keys
-    data = {
-        "name": file_path,
-        "content": text
-    }
-    
+    data = {"name": file_path, "content": text}
+
     # Convert the dictionary to a JSON string
     json_data = json.dumps(data)
-    
+
     # Upload the JSON string to the bucket
-    blob.upload_from_string(json_data, content_type='application/json')
+    blob.upload_from_string(json_data, content_type="application/json")
+
 
 # Triggered by a change in a storage bucket
 @functions_framework.cloud_event
@@ -104,7 +100,6 @@ def preprocess(cloud_event: CloudEvent) -> tuple:
         print("text extracted")
         save_text_to_bucket(bucket, f"preprocessed/{filename}.json", extracted_rules)
         print(f"text saved to preprocessed/{filename}.json")
-
 
         return event_id, event_type, bucket, name, metageneration, timeCreated, updated
     else:

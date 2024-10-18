@@ -1,8 +1,9 @@
-import chunker
 import functions_framework
-import gs_functions
 from cloudevents.http import CloudEvent
-from embedder import Embedder
+
+from .chunker import Chunker
+from .embedder import Embedder
+from .gs_functions import open_file, upload_file
 
 
 # Triggered by a change in a storage bucket
@@ -33,9 +34,9 @@ def main_chunker(cloud_event: CloudEvent):
         print(f"Created: {timeCreated}")
         print(f"Updated: {updated}")
 
-        data = gs_functions.open_file(bucket_name=bucket, file_name=name)
+        data = open_file(bucket_name=bucket, file_name=name)
 
-        chunks = chunker.Chunker(chunk_size=200).get_chunks(data["content"])
+        chunks = Chunker(chunk_size=200).get_chunks(data["content"])
 
         print("RES")
         print(data["name"])
@@ -62,8 +63,8 @@ def main_chunker(cloud_event: CloudEvent):
                 print("One embeded")
     print("All embeddings saved")
 
-    gs_functions.upload_file("prod-ragrules", "./embeded.txt", "embeddings/embeded.txt")
-    gs_functions.upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
+    upload_file("prod-ragrules", "./embeded.txt", "embeddings/embeded.txt")
+    upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
     print("FINISHED")
 
     # gcloud functions deploy chunker --gen2 --runtime=python312 --region=europe-west1 --source=. --entry-point=main_chunker --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=prod-ragrules"

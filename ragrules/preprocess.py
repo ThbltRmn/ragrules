@@ -5,7 +5,7 @@ from google.cloud import storage
 from pypdf import PdfReader
 
 
-def extract_text_from_pdf(bucket_name, file_name):
+def extract_text_from_pdf(bucket_name: str, file_name: str) -> str:
     """
     Extrait le texte d'un fichier PDF dans un bucket Google Storage.
 
@@ -33,7 +33,7 @@ def extract_text_from_pdf(bucket_name, file_name):
 test = extract_text_from_pdf("prod-ragrules", "raw/e1-crack-list-regle.pdf")
 
 
-def save_text_to_bucket(bucket_name, file_path, text):
+def save_text_to_bucket(bucket_name: str, file_path: str, text: str) -> None:
     """
     Sauvegarde le texte dans un fichier JSON dans un bucket Google Storage.
 

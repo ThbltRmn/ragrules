@@ -30,7 +30,6 @@ def call_gemini(prompt):
 
 # Backend setup
 def initialize_rag():
-    # Initialize FAISS (or any other vector store you are using)
     return "Rag Initialized"
     # embeddings = OpenAIEmbeddings()  # You can use OpenAI embeddings or any other embedding model
     # vectorstore = FAISS.load_local("path_to_faiss_index", embeddings)

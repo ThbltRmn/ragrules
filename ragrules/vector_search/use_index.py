@@ -1,9 +1,9 @@
 from .vector_search import VectorSearchClient
 
 # Usage
-API_ENDPOINT = "236921330.europe-west1-425866744273.vdb.vertexai.goog"
-INDEX_ENDPOINT = "projects/425866744273/locations/europe-west1/indexEndpoints/1270973869057900544"
-DEPLOYED_INDEX_ID = "embeddings_deploy_1729335715273"
+API_ENDPOINT = ""
+INDEX_ENDPOINT = ""
+DEPLOYED_INDEX_ID = ""
 
 # Initialize the VectorSearchClient
 vector_search = VectorSearchClient(API_ENDPOINT, INDEX_ENDPOINT, DEPLOYED_INDEX_ID)

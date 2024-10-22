@@ -8,7 +8,7 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 
 class Embedder:
-    def __init__(self, model="models/text-embedding-004", task_type="retrieval_document"):
+    def __init__(self, model: str = "models/text-embedding-004", task_type: str = "retrieval_document"):
         """
         Initialize the Embedder object with default model and task type.
 
@@ -19,7 +19,7 @@ class Embedder:
         self.model = model
         self.task_type = task_type
 
-    def embed_content(self, content, title=None):
+    def embed_content(self, content: str, title: str = "") -> list:
         """
         Embeds the provided content and returns the embedding vector.
 
@@ -40,9 +40,9 @@ class Embedder:
         self.result = result
 
         # Return the embedding part of the result
-        return result.get("embedding", None)
+        return result.get("embedding", [])
 
-    def print_trimmed_embedding(self, embedding, length=50):
+    def print_trimmed_embedding(self, embedding: list, length: int = 50) -> None:
         """
         Prints the first `length` characters of the embedding for inspection.
 
@@ -53,7 +53,7 @@ class Embedder:
         print(str(embedding)[:length] + "... TRIMMED]")
 
     # Save to two files : one listing the embeddings and one listing the sentences
-    def save_embedding(self, embedding, sentence, local_embed_path, local_sentences_path):
+    def save_embedding(self, embedding: list, sentence: str, local_embed_path: str, local_sentences_path: str) -> None:
         with open(local_embed_path, "a") as embed_file, open(local_sentences_path, "a") as sentence_file:
             # for sentence, embedding in zip(sentences, embeddings):
             created_id = str(uuid.uuid4())
@@ -129,4 +129,4 @@ if __name__ == "__main__":
         print("No embedding returned.")
 
     if result:
-        embedder.save_embedding(content, result, "./embeded.txt", "./sentences.txt")
+        embedder.save_embedding(result, content, "./embeded.txt", "./sentences.txt")

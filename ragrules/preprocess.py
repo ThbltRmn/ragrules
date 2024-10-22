@@ -1,7 +1,7 @@
 import json
 from io import BytesIO
 
-from google.cloud import storage
+import google.cloud.storage as storage
 from pypdf import PdfReader
 
 

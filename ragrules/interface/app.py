@@ -2,51 +2,53 @@ import json
 
 import requests
 import streamlit as st
-from langchain.chains import RetrievalQA
-from langchain.embeddings.openai import OpenAIEmbeddings  # Use any embedding model for retrieval
-from langchain.vectorstores import FAISS
+# from langchain.chains import RetrievalQA
+# from langchain.embeddings.openai import OpenAIEmbeddings  # Use any embedding model for retrieval
+# from langchain.vectorstores import FAISS
 
 
 # Function to call Gemini API
 def call_gemini(prompt):
-    url = "https://api.gemini.cloud/v1/generate"  # Update to the actual Gemini API endpoint
-    headers = {
-        "Authorization": f"Bearer YOUR_GEMINI_API_KEY",  # Replace with your Gemini API Key
-        "Content-Type": "application/json",
-    }
-    data = {
-        "prompt": prompt,
-        "model": "gemini-model",  # Replace with the correct Gemini model name if needed
-        "max_tokens": 500,
-        "temperature": 0.7,
-    }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    if response.status_code == 200:
-        return response.json()["text"]
-    else:
-        return "Error: Unable to generate a response from Gemini."
+    return "Gemini Called"
+    # url = "https://api.gemini.cloud/v1/generate"  # Update to the actual Gemini API endpoint
+    # headers = {
+    #     "Authorization": f"Bearer YOUR_GEMINI_API_KEY",  # Replace with your Gemini API Key
+    #     "Content-Type": "application/json",
+    # }
+    # data = {
+    #     "prompt": prompt,
+    #     "model": "gemini-model",  # Replace with the correct Gemini model name if needed
+    #     "max_tokens": 500,
+    #     "temperature": 0.7,
+    # }
+    # response = requests.post(url, headers=headers, data=json.dumps(data))
+    # if response.status_code == 200:
+    #     return response.json()["text"]
+    # else:
+    #     return "Error: Unable to generate a response from Gemini."
 
 
 # Backend setup
 def initialize_rag():
     # Initialize FAISS (or any other vector store you are using)
-    embeddings = OpenAIEmbeddings()  # You can use OpenAI embeddings or any other embedding model
-    vectorstore = FAISS.load_local("path_to_faiss_index", embeddings)
+    return "Rag Initialized"
+    # embeddings = OpenAIEmbeddings()  # You can use OpenAI embeddings or any other embedding model
+    # vectorstore = FAISS.load_local("path_to_faiss_index", embeddings)
 
-    # Set up RAG (Retrieval-Augmented Generation) pipeline with Gemini for the LLM
-    rag_pipeline = RetrievalQA.from_chain_type(
-        llm=None,  # We'll handle the LLM call manually
-        chain_type="stuff",
-        retriever=vectorstore.as_retriever(),
-    )
-    return rag_pipeline
+    # # Set up RAG (Retrieval-Augmented Generation) pipeline with Gemini for the LLM
+    # rag_pipeline = RetrievalQA.from_chain_type(
+    #     llm=None,  # We'll handle the LLM call manually
+    #     chain_type="stuff",
+    #     retriever=vectorstore.as_retriever(),
+    # )
+    # return rag_pipeline
 
 
 # Initialize the RAG model once
 rag_model = initialize_rag()
 
 # Streamlit UI
-st.title("RAG-powered Chatbot with Gemini")
+st.title("Ask your question to the RagRules IA")
 
 # Input box for user question
 user_question = st.text_input("Ask me anything:")

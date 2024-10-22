@@ -6,18 +6,11 @@ class VectorSearchClient:
         self.api_endpoint = api_endpoint
         self.index_endpoint = index_endpoint
         self.deployed_index_id = deployed_index_id
-        self.client = MatchServiceClient(
-            client_options={"api_endpoint": self.api_endpoint}
-        )
+        self.client = MatchServiceClient(client_options={"api_endpoint": self.api_endpoint})
 
     def build_query(self, feature_vector, neighbor_count=10):
-        datapoint = IndexDatapoint(
-            feature_vector=feature_vector
-        )
-        query = FindNeighborsRequest.Query(
-            datapoint=datapoint,
-            neighbor_count=neighbor_count
-        )
+        datapoint = IndexDatapoint(feature_vector=feature_vector)
+        query = FindNeighborsRequest.Query(datapoint=datapoint, neighbor_count=neighbor_count)
         return query
 
     def find_neighbors(self, feature_vector, neighbor_count=10, return_full_datapoint=False):

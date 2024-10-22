@@ -1,4 +1,4 @@
-from vector_search import VectorSearchClient
+from .vector_search import VectorSearchClient
 
 # Usage
 API_ENDPOINT = "236921330.europe-west1-425866744273.vdb.vertexai.goog"

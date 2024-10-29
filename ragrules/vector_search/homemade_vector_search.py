@@ -32,20 +32,21 @@ def find_nearest_neighbors(target_vector: list, vectors: list, top_n: int = 5) -
     return top_neighbors
 
 
-# Example usage
-if __name__ == "__main__":
-    print(os.listdir())
-    file_path: str = "tests/datas/crack_list_embedded.json"
-    vector_path = "tests/datas/test_base_vector.txt"
-    target_vector = [float(line.strip().strip(",")) for line in open(vector_path)] # Replace with the target vector you want to query
-    print(target_vector)
-    # Load vectors from file
-    vectors: list = load_vectors(file_path)
+# if __name__ == "__main__":
+#     print(os.listdir())
+#     file_path: str = "tests/datas/crack_list_embedded.json"
+#     vector_path = "tests/datas/test_base_vector.txt"
+#     target_vector = [
+#         float(line.strip().strip(",")) for line in open(vector_path)
+#     ]  # Replace with the target vector you want to query
+#     print(target_vector)
+#     # Load vectors from file
+#     vectors: list = load_vectors(file_path)
 
-    # Find top 5 nearest neighbors
-    top_neighbors: list = find_nearest_neighbors(target_vector, vectors, top_n=2)
+#     # Find top 5 nearest neighbors
+#     top_neighbors: list = find_nearest_neighbors(target_vector, vectors, top_n=2)
 
-    # Print results
-    print("Top 5 Nearest Neighbors:")
-    for neighbor_id, similarity in top_neighbors:
-        print(f"ID: {neighbor_id}, Similarity: {similarity:.4f}")
+#     # Print results
+#     print("Top 5 Nearest Neighbors:")
+#     for neighbor_id, similarity in top_neighbors:
+#         print(f"ID: {neighbor_id}, Similarity: {similarity:.4f}")

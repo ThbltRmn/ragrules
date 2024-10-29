@@ -2,9 +2,9 @@ import json
 
 import requests
 import streamlit as st
-from games_functions import load_games, search_games
 
 from cloudfunctions.chunker.embedder import Embedder
+from ragrules.interface.games_functions import load_games, search_games
 from ragrules.vector_search.homemade_vector_search import find_nearest_neighbors, load_vectors
 
 # from langchain.chains import RetrievalQA

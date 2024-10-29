@@ -6,7 +6,7 @@ from scipy.spatial.distance import cosine
 
 
 # Load vectors from file
-def load_vectors(file_path: str) -> list:
+def load_vectors(file_path: str = "tests/datas/crack_list_embedded.json") -> list:
     vectors: list = []
     with open(file_path) as f:
         for line in f:

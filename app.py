@@ -16,7 +16,7 @@ from ragrules.vector_search.homemade_vector_search import find_nearest_neighbors
 def call_gemini(prompt):
     url = "https://api.gemini.cloud/v1/generate"  # Update to the actual Gemini API endpoint
     headers = {
-        "Authorization": f"Bearer YOUR_GEMINI_API_KEY",  # Replace with your Gemini API Key
+        "Authorization": "Bearer YOUR_GEMINI_API_KEY",  # Replace with your Gemini API Key
         "Content-Type": "application/json",
     }
     data = {
@@ -25,7 +25,7 @@ def call_gemini(prompt):
         "max_tokens": 500,
         "temperature": 0.7,
     }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, data=json.dumps(data), timeout="")
     if response.status_code == 200:
         return response.json()["text"]
     else:
@@ -53,12 +53,12 @@ def call_gemini(prompt):
 # Initialize Embedder
 embedder = Embedder()
 
- # Load games
+# Load games
 games = load_games()
 
 poc_v = st.radio("Switch POC versions", ["Sans Autocomplete", "Avec Autocomplete"])
 
-if poc_v=="Sans Autocomplete":
+if poc_v == "Sans Autocomplete":
     st.title("Version 1 : sans autocomplete")
 
     # Search widget
@@ -68,18 +68,18 @@ if poc_v=="Sans Autocomplete":
         results = search_games(games, query)
         if results:
             # Show results
-            selected_game = st.selectbox("Select a game:", [game['name'] for game in results])
+            selected_game = st.selectbox("Select a game:", [game["name"] for game in results])
 
             # Get the ID of the selected game
             if selected_game:
-                game_id = next(game['id'] for game in results if game['name'] == selected_game)
+                game_id = next(game["id"] for game in results if game["name"] == selected_game)
                 st.write(f"Selected Game ID: {game_id}")
         else:
             st.write("No games found.")
 else:
     st.title("Version 2 : autocomplete")
 
-    game_names = [game['name'] for game in games]
+    game_names = [game["name"] for game in games]
 
     filtered_names = game_names  # Show all games if no query is entered
 
@@ -88,7 +88,7 @@ else:
         selected_game_name = st.selectbox("Select a game:", filtered_names)
         # Find the game ID of the selected game
         if selected_game_name:
-            selected_game = next((game for game in games if game['name'] == selected_game_name), None)
+            selected_game = next((game for game in games if game["name"] == selected_game_name), None)
             if selected_game:
                 st.write(f"Selected Game ID: {selected_game['id']}")
     else:
@@ -105,7 +105,7 @@ if user_question:
         embedded = embedder.embed_content(user_question)
         st.write(f"{embedded[:10]} ...")
     with st.spinner("Calculating nearest neighbors"):
-        nn = find_nearest_neighbors(embedded,load_vectors(), top_n=3)
+        nn = find_nearest_neighbors(embedded, load_vectors(), top_n=3)
         st.write(nn)
 # if user_question:
 #     # Show loading animation while processing

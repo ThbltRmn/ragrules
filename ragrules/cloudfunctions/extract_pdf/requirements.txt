@@ -1,0 +1,4 @@
+functions-framework==3.5.0
+cloudevents==1.11.0
+pypdf==5.0.1
+google-cloud-storage==2.18.2

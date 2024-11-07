@@ -1,35 +1,15 @@
-import json
-
-import requests
 import streamlit as st
 
-from cloudfunctions.chunker.embedder import Embedder
+from ragrules.cloudfunctions.chunker.embedder import Embedder
+from ragrules.Context_Retriever import ContextRetriever
 from ragrules.interface.games_functions import load_games, search_games
+from ragrules.MainQuestion import MainQuestion
 from ragrules.vector_search.homemade_vector_search import find_nearest_neighbors, load_vectors
+from ragrules.GeminiClient import GeminiClient
 
 # from langchain.chains import RetrievalQA
 # from langchain.embeddings.openai import OpenAIEmbeddings  # Use any embedding model for retrieval
 # from langchain.vectorstores import FAISS
-
-
-# Function to call Gemini API
-def call_gemini(prompt):
-    url = "https://api.gemini.cloud/v1/generate"  # Update to the actual Gemini API endpoint
-    headers = {
-        "Authorization": "Bearer YOUR_GEMINI_API_KEY",  # Replace with your Gemini API Key
-        "Content-Type": "application/json",
-    }
-    data = {
-        "prompt": prompt,
-        "model": "gemini-model",  # Replace with the correct Gemini model name if needed
-        "max_tokens": 500,
-        "temperature": 0.7,
-    }
-    response = requests.post(url, headers=headers, data=json.dumps(data), timeout="")
-    if response.status_code == 200:
-        return response.json()["text"]
-    else:
-        return "Error: Unable to generate a response from Gemini."
 
 
 # Backend setup
@@ -96,17 +76,27 @@ else:
 
 # Streamlit UI
 st.title("RAG-powered Chatbot with Gemini")
+gemini_client = GeminiClient()
 
 # Input box for user question
 user_question = st.text_input("Ask me anything:")
-
-if user_question:
+btn = st.button("Call Ragrules IA")
+if btn:
     with st.spinner("Generating embedding..."):
         embedded = embedder.embed_content(user_question)
         st.write(f"{embedded[:10]} ...")
     with st.spinner("Calculating nearest neighbors"):
         nn = find_nearest_neighbors(embedded, load_vectors(), top_n=3)
         st.write(nn)
+    with st.spinner("Adding context and retrieving answer to your question"):
+        cr = ContextRetriever(context_file="..", question=user_question)
+        cr.retrieve_context()
+        mq = MainQuestion(game_name = "Crack List", question = user_question, context= cr.context, gemini_client=gemini_client)
+        res, context = mq.ask_question()
+        st.write("Context given :")
+        st.write(context)
+        st.write("Result :")
+        st.write(res)
 # if user_question:
 #     # Show loading animation while processing
 #     with st.spinner("Retrieving and generating response..."):

@@ -91,7 +91,7 @@ if btn:
     with st.spinner("Adding context and retrieving answer to your question"):
         cr = ContextRetriever(context_file="..", question=user_question)
         cr.retrieve_context()
-        mq = MainQuestion(game_name = "Crack List", question = user_question, context= cr.context, gemini_client=gemini_client)
+        mq = MainQuestion(game_name = selected_game, question = user_question, context= cr.context, gemini_client=gemini_client)
         res, context = mq.ask_question()
         st.write("Context given :")
         st.write(context)

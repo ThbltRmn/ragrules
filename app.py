@@ -77,6 +77,7 @@ else:
 # Streamlit UI
 st.title("RAG-powered Chatbot with Gemini")
 gemini_client = GeminiClient()
+game_principle = st.text_area("Write the game principle here (will be auto generated)")
 
 # Input box for user question
 user_question = st.text_input("Ask me anything:")
@@ -86,12 +87,12 @@ if btn:
         embedded = embedder.embed_content(user_question)
         st.write(f"{embedded[:10]} ...")
     with st.spinner("Calculating nearest neighbors"):
-        nn = find_nearest_neighbors(embedded, load_vectors(), top_n=3)
+        nn = find_nearest_neighbors(embedded, load_vectors("tests/datas/sw_embedded.json"), top_n=5)
         st.write(nn)
     with st.spinner("Adding context and retrieving answer to your question"):
         cr = ContextRetriever(context_file="..", question=user_question)
         cr.retrieve_context()
-        mq = MainQuestion(game_name = selected_game, question = user_question, context= cr.context, gemini_client=gemini_client)
+        mq = MainQuestion(game_name = selected_game, question = user_question, context= cr.context, gemini_client=gemini_client, game_principle = game_principle)
         res, context = mq.ask_question()
         st.write("Context given :")
         st.write(context)

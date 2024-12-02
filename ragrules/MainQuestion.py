@@ -3,11 +3,12 @@ from ragrules.prompts import RAG_PROMPT
 
 
 class MainQuestion:
-    def __init__(self, game_name: str, question: str, context: str, gemini_client: GeminiClient):
+    def __init__(self, game_name: str, question: str, context: str, gemini_client: GeminiClient, game_principle: str):
         self.game_name = game_name
         self.question = question
         self.context = context
         self.gemini_client = gemini_client
+        self.game_principle = game_principle
 
     def ask_question(self) -> str:
         # messages = [
@@ -20,7 +21,7 @@ class MainQuestion:
         context = self.context
         prompt = f"""
                 {RAG_PROMPT}
-                The name of the game is {self.game_name}.
+                The name of the game is {self.game_name}, and a short description of its rules is {self.game_principle}.
                 Use the following informations:
 
                 ```

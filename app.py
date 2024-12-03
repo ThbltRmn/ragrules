@@ -77,7 +77,7 @@ else:
 # Streamlit UI
 st.title("RAG-powered Chatbot with Gemini")
 gemini_client = GeminiClient()
-game_principle = st.text_area("Write the game principle here (will be auto generated)")
+game_principle = st.text_area("Write the game principle here (will then be auto generated)", value="Picking a fantasy Race and Special Power combination, you must use their unique racial traits and skills to conquer surrounding Regions and amass Victory coins - often at the expense of weaker neighbors. Placing troops (Race tokens) in various Regions, and conquering adjacent lands, you earn Victory coins for each Region you occupy at the end of your turn. Eventually, your race will become increasingly over-extended (like those you have already crushed!) and you will need to abandon your civilization and look for another. The key to your victory is knowing when to push your empire into decline and ride a new one to supremacy in the land of Small World!")
 
 # Input box for user question
 user_question = st.text_input("Ask me anything:")

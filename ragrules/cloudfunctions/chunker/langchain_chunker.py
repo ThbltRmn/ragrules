@@ -81,6 +81,8 @@ def process_file(data, is_cloud=False, with_embedding=True):
             upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
             print("Embeddings uploaded to GCS.")
         else:
+            #os.rename("./embeded.txt",f"~/Documents/Projects/{file_name}_embedded.json")
+            #os.rename("./embeded.txt",f"~/Documents/Projects/{file_name}_sentences.json")
             print("Processing finished locally.")
     else:
         print("File does not match the target criteria.")
@@ -112,4 +114,4 @@ if __name__ == "__main__":
     data = {
         "name": local_file_path,
     }
-    process_file(data, is_cloud=False, with_embedding=False)
+    process_file(data, is_cloud=False, with_embedding=True)

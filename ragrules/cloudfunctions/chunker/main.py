@@ -1,71 +1,105 @@
+import json
+import os
+import sys
+
 import functions_framework
+from chunker import Chunker
 from cloudevents.http import CloudEvent
+from embedder import Embedder
+from gs_functions import open_file, upload_file
 
-from .chunker import Chunker
-from .embedder import Embedder
-from .gs_functions import open_file, upload_file
+CHUNKS_SIZE = 200
 
 
-# Triggered by a change in a storage bucket
-@functions_framework.cloud_event
-def main_chunker(cloud_event: CloudEvent):
-    data = cloud_event.data
+def process_file(data, is_cloud=False, with_embedding=True):
+    """
+    Processes a file either locally or in the cloud.
 
-    event_id = cloud_event["id"]
-    event_type = cloud_event["type"]
-
-    bucket = data["bucket"]
-    name = data["name"]
-    metageneration = data["metageneration"]
-    timeCreated = data["timeCreated"]
-    updated = data["updated"]
-
-    # Define the path and extension to filter
-    target_path = "preprocessed/"
+    Args:
+        data (dict): Contains file content and metadata (e.g., name, bucket).
+        is_cloud (bool): Indicates if the function is running in GCP.
+    """
+    target_path = "preprocessed"
     target_extension = ".json"
 
+    file_path = data["name"]
+    file_name = data["name"].split("/")[-1]
+    print(file_name)
+
     # Check if the file is in the target path and has the target extension
-    if name.startswith(target_path) and name.endswith(target_extension):
-        print(f"Event ID: {event_id}")
-        print(f"Event type: {event_type}")
-        print(f"Bucket: {bucket}")
-        print(f"File: {name}")
-        print(f"Metageneration: {metageneration}")
-        print(f"Created: {timeCreated}")
-        print(f"Updated: {updated}")
+    if file_name.startswith(target_path) and file_name.endswith(target_extension):
+        print(f"Processing file: {file_name}")
 
-        data = open_file(bucket_name=bucket, file_name=name)
+        if is_cloud:
+            # Read file from cloud storage
+            file_content = open_file(bucket_name=data["bucket"], file_name=file_path)
+            content = file_content["content"]
+        else:
+            # Read local file
+            try:
+                with open(file_path, encoding="utf-8") as f:
+                    content = json.load(f)["content"]
+            except Exception as e:
+                print(f"Failed to read file {file_path}: {e}")
+                return
 
-        chunks = Chunker(chunk_size=200).get_chunks(data["content"])
+        # Chunk the data
+        chunks = Chunker(chunk_size=CHUNKS_SIZE).get_chunks(content)
+        print(f"Chunks created: {"\nCHUNK : ".join(chunks)}")
+        print(f"Number of chunks : {len(chunks)}")
 
-        print("RES")
-        print(data["name"])
-        print(chunks)
+        if chunks and with_embedding:
+            embedder = Embedder()
+
+            # Embed content
+            for chunk in chunks:
+                print(f"Processing chunk: {chunk}")
+                result = embedder.embed_content(chunk)
+
+                if result:
+                    embedder.print_trimmed_embedding(result)
+                    embedder.save_embedding(result, chunk, "./embeded.txt", "./sentences.txt")
+                    print("One embedding saved.")
+                else:
+                    print("No embedding returned for this chunk.")
+
+        print("All embeddings saved.")
+
+        if is_cloud:
+            # Upload to cloud storage
+            upload_file("prod-ragrules", "./embeded.txt", "embeddings/embeded.txt")
+            upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
+            print("Embeddings uploaded to GCS.")
+        else:
+            print("Processing finished locally.")
     else:
-        print("Else")
+        print("File does not match the target criteria.")
 
-    if chunks:
-        embedder = Embedder()
 
-        # Embed content ; TODO replace by a batch embedding
-        for chunk in chunks:
-            print(chunk)
-            result = embedder.embed_content(chunk)
+# Cloud Function Entry Point
+@functions_framework.cloud_event
+def main_chunker(cloud_event: CloudEvent):
+    """
+    Entry point for GCP Cloud Function triggered by a CloudEvent.
+    """
+    data = cloud_event.data
+    print(f"Triggered by CloudEvent: {cloud_event['id']}")
 
-            # Print the first 50 characters of the embedding
-            if result:
-                embedder.print_trimmed_embedding(result)
-            else:
-                print("No embedding returned.")
+    process_file(data, is_cloud=True)
 
-            if result:
-                embedder.save_embedding(result, chunk, "./embeded.txt", "./sentences.txt")
-                print("One embeded")
-    print("All embeddings saved")
 
-    upload_file("prod-ragrules", "./embeded.txt", "embeddings/embeded.txt")
-    upload_file("prod-ragrules", "./sentences.txt", "embeddings/sentences.txt")
-    print("FINISHED")
+# Local Execution
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python script.py <local_file_path>")
+        sys.exit(1)
 
-    # gcloud functions deploy chunker --gen2 --runtime=python312 --region=europe-west1 --source=. --entry-point=main_chunker --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=prod-ragrules"
-    # and add --set-env-vars GEMINI_API_KEY=...
+    local_file_path = sys.argv[1]
+    if not os.path.exists(local_file_path):
+        print(f"File not found: {local_file_path}")
+        sys.exit(1)
+
+    data = {
+        "name": local_file_path,
+    }
+    process_file(data, is_cloud=False, with_embedding=False)

@@ -32,7 +32,7 @@ class MainQuestion:
                 {self.question}
                         """
         print(prompt)
-        return self.gemini_client.call_model(prompt), self.context
+        return self.gemini_client.call_model(prompt)#, self.context
 
     def __repr__(self):
         return f"MainQuestion(GameName='{self.game_name}', Question='{self.question}', Context='{self.context}')"

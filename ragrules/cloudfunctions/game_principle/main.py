@@ -20,7 +20,7 @@ def ask_llm_for_summary(text, api_key):
         "Summarize the game principle in one concise paragraph:"
         f"{text}\n\n"
     )
-    
+
     result = genai.embed_content(
             model=self.model,
             content=content,

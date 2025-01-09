@@ -28,6 +28,16 @@ def load_full_sentences(file_path: str = "tests/datas/crack_list_sentences.json"
             sentences.append((sentence_id, sentence))
     return sentences
 
+def load_full_sentences_dict(file_path: str = "tests/datas/crack_list_sentences.json") -> dict:
+    sentences: dict = dict()
+    with open(file_path) as f:
+        for line in f:
+            # Parse the line as JSON
+            data = json.loads(line)
+            sentence_id: str = data["id"]
+            sentence = str(np.array(data["sentence"]))
+            sentences[sentence_id] = sentence
+    return sentences
 
 # Function to find top N nearest neighbors using cosine similarity
 def find_nearest_neighbors(target_vector: list, vectors: list, top_n: int = 5) -> list:
@@ -39,7 +49,9 @@ def find_nearest_neighbors(target_vector: list, vectors: list, top_n: int = 5) -
         similarities.append((vec_id, similarity))
     # Sort by similarity in descending order and get the top N
     top_neighbors: list = sorted(similarities, key=lambda x: x[1], reverse=True)[:top_n]
-    return top_neighbors
+    print(top_neighbors)
+    top_neighbors_dict = {i[0] : i[1] for i in top_neighbors}
+    return top_neighbors_dict
 
 # Function to find top N nearest neighbors using cosine similarity
 def find_nearest_neighbors_ids(target_vector: list, vectors: list, top_n: int = 5) -> list:
@@ -51,7 +63,9 @@ def find_nearest_neighbors_ids(target_vector: list, vectors: list, top_n: int = 
         similarities.append((vec_id, similarity))
     # Sort by similarity in descending order and get the top N
     top_neighbors: list = sorted(similarities, key=lambda x: x[1], reverse=True)[:top_n]
-    top_neighbors_ids = [i[0] for i in top_neighbors]
+    print(top_neighbors)
+    #top_neighbors_ids = [i[0] for i in top_neighbors]
+    top_neighbors_ids = [i for i in top_neighbors]
     return top_neighbors_ids
 
 # if __name__ == "__main__":

@@ -1,4 +1,6 @@
 import streamlit as st
+from streamlit_pdf_viewer import pdf_viewer
+from streamlit import session_state as ss
 
 from ragrules.cloudfunctions.chunker.embedder import Embedder
 from ragrules.Context_Retriever import ContextRetriever
@@ -6,7 +8,7 @@ from ragrules.interface.games_functions import load_games, search_games
 from ragrules.MainQuestion import MainQuestion
 from ragrules.vector_search.homemade_vector_search import find_nearest_neighbors, load_vectors
 from ragrules.GeminiClient import GeminiClient
-
+from ragrules.interface.pdf_viewer import show_pdf, highlight_text_in_pdf_and_extract_pages
 # from langchain.chains import RetrievalQA
 # from langchain.embeddings.openai import OpenAIEmbeddings  # Use any embedding model for retrieval
 # from langchain.vectorstores import FAISS
@@ -32,6 +34,7 @@ from ragrules.GeminiClient import GeminiClient
 
 # Initialize Embedder
 embedder = Embedder()
+ss.pdf = ""
 
 # Load games
 games = load_games()
@@ -87,17 +90,45 @@ if btn:
         embedded = embedder.embed_content(user_question)
         st.write(f"{embedded[:10]} ...")
     with st.spinner("Calculating nearest neighbors"):
-        nn = find_nearest_neighbors(embedded, load_vectors("tests/datas/sw_embedded.json"), top_n=5)
-        st.write(nn)
-    with st.spinner("Adding context and retrieving answer to your question"):
+        #nn = find_nearest_neighbors(embedded, load_vectors("tests/datas/sw_embedded.json"), top_n=5)
+        #st.write(nn)
         cr = ContextRetriever(context_file="..", question=user_question)
-        cr.retrieve_context()
+        cr.retrieve_context(top_n=4)
+        descr = cr.describe_context()
+        st.write("Context Given :")
+        st.write(descr)
+    with st.spinner("Adding context and retrieving answer to your question"):
         mq = MainQuestion(game_name = selected_game, question = user_question, context= cr.context, gemini_client=gemini_client, game_principle = game_principle)
-        res, context = mq.ask_question()
-        st.write("Context given :")
-        st.write(context)
+        #res, context = mq.ask_question()
+        res = mq.ask_question()
+        #st.write("Context given :")
+        #st.write("\n\n".join([f"Sentence : {i[0]} ; Simi : {i[1]}" for i in cr.context_scores]))
         st.write("Result :")
         st.write(res)
+
+        #WORKING WITH streamlit-pdf-viewer
+        # annotations = [
+        #                 {
+        #                     "page": "2",
+        #                     "x": "50",
+        #                     "y": "50",
+        #                     "width": "100",
+        #                     "height": "100",
+        #                     "color": "red"
+        #                 }]
+        # pdf_viewer("tests/datas/sw_rules_2015_en.pdf", pages_to_render = [2],
+        #            annotations=annotations)
+
+        # VERSION FOR PYMUPDF
+        highlighted_pdf_data, pages_with_text = highlight_text_in_pdf_and_extract_pages(
+            filename="./tests/datas/sw_rules_2015_en.pdf", search_text="The cost of each combo is determined"
+        )
+
+        page = pages_with_text[0]
+        ss.pdf = show_pdf(highlighted_pdf_data, page)
+        
+st.markdown(ss.pdf, unsafe_allow_html=True)
+
 # if user_question:
 #     # Show loading animation while processing
 #     with st.spinner("Retrieving and generating response..."):
